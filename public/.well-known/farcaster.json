@@ -1,13 +1,13 @@
 {
   "accountAssociation": {
-    "header": "",
-    "payload": "",
-    "signature": ""
+    "header": "eyJmaWQiOjg5MTM2MSwidHlwZSI6ImF1dGgiLCJrZXkiOiIweDcwODUyNjU2N2QyMzVkNjFlZjIwYjNEMkU5MjVGMWU0ODgyNTQ4ZWQifQ",
+    "payload": "eyJkb21haW4iOiJ0aWMtdGFjLXRvZS1taW5pZ2FtZS1hbWJlci52ZXJjZWwuYXBwIn0",
+    "signature": "zhTZk74U3gbZncAQB4IbMSGxTee3HTPQgSSu9JSgoT4J06JOriedCiuddzfJ2tveiIM2djGy+t5JygsdJ+IUJhs="
   },
   "miniapp": {
     "version": "1",
     "name": "TicTacToe",
-     "subtitle": "Tic Tac Toe",
+    "subtitle": "Tic Tac Toe",
     "description": "Play Tic Tac Toe",
     "primaryCategory": "games",
     "iconUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
