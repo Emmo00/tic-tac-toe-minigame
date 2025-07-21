@@ -1,18 +1,12 @@
 {
   "miniapp": {
-    "version": "0",
+    "version": "1",
     "name": "TicTacToe",
-    "iconUrl": "https://yoink.party/logo.png",
-    "homeUrl": "https://yoink.party/framesV2/",
-    "imageUrl": "https://yoink.party/framesV2/opengraph-image",
-    "buttonTitle": "🚩 Start",
-    "splashImageUrl": "https://yoink.party/logo.png",
-    "splashBackgroundColor": "#f5f0ec",
-    "requiredChains": ["eip155:8453"],
-    "requiredCapabilities": [
-      "actions.signIn",
-      "wallet.getEthereumProvider",
-      "actions.swapToken"
-    ]
+    "iconUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
+    "homeUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
+    "imageUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_maskable.png",
+    "buttonTitle": "🚩 Play",
+    "splashImageUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
+    "splashBackgroundColor": "#fff"
   }
 }
