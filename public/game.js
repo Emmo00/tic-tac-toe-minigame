@@ -20,15 +20,15 @@ class Game {
     const plays = [...state[0], ...state[1], ...state[2]];
     // count number of x
     const nbX = plays.reduce((prev, curr) => {
-      if (curr === 'x') prev++;
+      if (curr === "x") prev++;
     }, 0);
     // count number of o
     const nbO = plays.reduce((prev, curr) => {
-      if (curr === 'o') prev++;
+      if (curr === "o") prev++;
     }, 0);
     // if round is odd, x goes first, else o
-    let order = ['x', 'o'];
-    if (this.xFirst) order = ['o', 'x'];
+    let order = ["x", "o"];
+    if (this.xFirst) order = ["o", "x"];
     return order[Number(nbX === nbO)];
   }
 
@@ -56,14 +56,14 @@ class Game {
 
   terminal(state) {
     return (
-      this.playerWon(state, 'x') ||
-      this.playerWon(state, 'o') ||
+      this.playerWon(state, "x") ||
+      this.playerWon(state, "o") ||
       this.tieCheck(state)
     );
   }
 
   utility(state) {
-    return this.playerWon(state, 'x') ? 1 : this.playerWon(state, 'o') ? -1 : 0;
+    return this.playerWon(state, "x") ? 1 : this.playerWon(state, "o") ? -1 : 0;
   }
 
   playerWon(state, player) {
@@ -117,7 +117,7 @@ class Game {
     return (
       (function () {
         return ![...state[0], ...state[1], ...state[2]].includes(null);
-      })() && !(this.playerWon(state, 'x') || this.playerWon(state, 'o'))
+      })() && !(this.playerWon(state, "x") || this.playerWon(state, "o"))
     );
   }
 
@@ -133,7 +133,7 @@ class Game {
 
 class AI {
   play(game) {
-    if (game.player(game.board) === 'x') return this.max(game);
+    if (game.player(game.board) === "x") return this.max(game);
     return this.mini(game);
   }
 

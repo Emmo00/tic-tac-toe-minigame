@@ -1,7 +1,6 @@
 import { sdk } from "@farcaster/frame-sdk";
 import { useEffect } from "react";
 
-
 function App() {
   useEffect(() => {
     sdk.actions.ready();
@@ -45,9 +44,9 @@ function App() {
       <footer>
         AI by {" \t"}
         <a
-        style={{
-          marginLeft: "3px"
-        }}
+          style={{
+            marginLeft: "3px",
+          }}
           href="http://farcaster.xyz/emmo00"
           target="_blank"
           rel="noopener noreferrer"
