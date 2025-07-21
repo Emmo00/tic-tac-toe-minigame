@@ -1,12 +1,21 @@
 {
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
   "miniapp": {
     "version": "1",
     "name": "TicTacToe",
+     "subtitle": "Tic Tac Toe",
+    "description": "Play Tic Tac Toe",
+    "primaryCategory": "games",
     "iconUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
-    "homeUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
+    "homeUrl": "https://tic-tac-toe-minigame-amber.vercel.app/",
     "imageUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_maskable.png",
     "buttonTitle": "🚩 Play",
     "splashImageUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
-    "splashBackgroundColor": "#fff"
+    "splashBackgroundColor": "#ffffff",
+    "castShareUrl": "https://farcaster.xyz/~/compose?text=Play+TicTacToe+here"
   }
 }
