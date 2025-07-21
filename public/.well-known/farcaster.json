@@ -16,6 +16,6 @@
     "buttonTitle": "🚩 Play",
     "splashImageUrl": "https://tic-tac-toe-minigame-amber.vercel.app/icon512_rounded.png",
     "splashBackgroundColor": "#ffffff",
-    "castShareUrl": "https://farcaster.xyz/~/compose?text=Play+TicTacToe+here"
+    "castShareUrl": "https://tic-tac-toe-minigame-amber.vercel.app"
   }
 }
