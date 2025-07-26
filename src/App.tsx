@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { Game, AI } from "./game.ts";
 
 function App() {
+  useEffect(() => {
+    sdk.actions.ready();
+  }, []);
+  
   const getInitialBoard = (): ("x" | "o" | null)[][] => [
     [null, null, null],
     [null, null, null],
@@ -89,7 +93,10 @@ function App() {
         game.makeMove(action);
         setBoard(
           game.board.map((row: (string | null)[]) =>
-            row.map(cell => (cell === "x" || cell === "o" ? cell : null) as "x" | "o" | null)
+            row.map(
+              (cell) =>
+                (cell === "x" || cell === "o" ? cell : null) as "x" | "o" | null
+            )
           )
         );
         setXTurn(true);
@@ -111,7 +118,10 @@ function App() {
     game.makeMove(action);
     setBoard(
       game.board.map((row: (string | null)[]) =>
-        row.map(cell => (cell === "x" || cell === "o" ? cell : null) as "x" | "o" | null)
+        row.map(
+          (cell) =>
+            (cell === "x" || cell === "o" ? cell : null) as "x" | "o" | null
+        )
       )
     );
     setXTurn(false);
@@ -128,7 +138,12 @@ function App() {
               className={`cell${cell === "x" ? " x" : cell === "o" ? " o" : ""}`}
               data-cell
               onClick={() => handleCellClick(rowIdx, colIdx)}
-              style={{ cursor: board[rowIdx][colIdx] || game.terminal(board) || !xTurn ? "not-allowed" : "pointer" }}
+              style={{
+                cursor:
+                  board[rowIdx][colIdx] || game.terminal(board) || !xTurn
+                    ? "not-allowed"
+                    : "pointer",
+              }}
             ></div>
           ))
         )}
@@ -151,16 +166,29 @@ function App() {
             </tr>
           </tbody>
         </table>
-        <button className="clear-button" id="clear-button" onClick={clearScores}>
+        <button
+          className="clear-button"
+          id="clear-button"
+          onClick={clearScores}
+        >
           Clear Data
         </button>
       </div>
-      <div className="winning-message" id="winning-message" style={{ display: showWinning ? "block" : "none" }}>
+      <div
+        className="winning-message"
+        id="winning-message"
+        style={{ display: showWinning ? "block" : "none" }}
+      >
         <div data-winning-message-text>{winningMessage}</div>
-        <button id="restart-button" onClick={() => {
-          setXFirst(!xFirst);
-          startGame();
-        }}>Restart</button>
+        <button
+          id="restart-button"
+          onClick={() => {
+            setXFirst(!xFirst);
+            startGame();
+          }}
+        >
+          Restart
+        </button>
       </div>
       <footer>
         AI by {" \t"}
