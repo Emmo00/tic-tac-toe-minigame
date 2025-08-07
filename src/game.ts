@@ -1,21 +1,14 @@
 // Copied from public/game.js for module import
-interface Board extends Array<Array<"x" | "o" | null>> {}
-
-interface Action {
-  player: "x" | "o";
-  position: [number, number];
-}
-
 class Game {
   xFirst = true;
-  board: Board;
+  board: ("x" | "o" | null)[][];
 
-  constructor(board: Board | null = null) {
+  constructor(board: ("x" | "o" | null)[][] | null = null) {
     if (!board) this.board = this.createBoard();
     else this.board = board;
   }
 
-  createBoard(): Board {
+  createBoard() {
     return [
       [null, null, null],
       [null, null, null],
@@ -23,23 +16,23 @@ class Game {
     ];
   }
 
-  player(state: Board): "x" | "o" {
-    const plays: Array<"x" | "o" | null> = [...state[0], ...state[1], ...state[2]];
-    const nbX: number = plays.reduce((prev: number, curr: "x" | "o" | null) => {
+  player(state: ("x" | "o" | null)[][]) {
+    const plays = [...state[0], ...state[1], ...state[2]];
+    const nbX = plays.reduce((prev, curr) => {
       if (curr === "x") prev++;
       return prev;
     }, 0);
-    const nbO: number = plays.reduce((prev: number, curr: "x" | "o" | null) => {
+    const nbO = plays.reduce((prev, curr) => {
       if (curr === "o") prev++;
       return prev;
     }, 0);
-    let order: ["x", "o"] | ["o", "x"] = ["x", "o"];
-    if (this.xFirst) order = ["o", "x"];
-    return order[Number(nbX === nbO)];
+    // If X and O have equal moves, it's X's turn (X goes first)
+    // If X has one more move than O, it's O's turn
+    return nbX === nbO ? "x" : "o";
   }
 
-  actions(state: Board): Action[] {
-    const acts: Action[] = [];
+  actions(state: ("x" | "o" | null)[][]) {
+    const acts = [];
     const player = this.player(state);
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
@@ -51,15 +44,18 @@ class Game {
     return acts;
   }
 
-  result(state: Board, action: Action | null): Board {
+  result(
+    state: ("x" | "o" | null)[][],
+    action: { player: "x" | "o"; position: [number, number] }
+  ) {
     if (!action) return state;
     const { player, position } = action;
-    let c_state: Board = [[...state[0]], [...state[1]], [...state[2]]];
+    let c_state = [[...state[0]], [...state[1]], [...state[2]]];
     c_state[position[1]][position[0]] = player;
     return c_state;
   }
 
-  terminal(state: Board): boolean {
+  terminal(state: ("x" | "o" | null)[][]) {
     return (
       this.playerWon(state, "x") ||
       this.playerWon(state, "o") ||
@@ -67,11 +63,11 @@ class Game {
     );
   }
 
-  utility(state: Board): number {
+  utility(state: ("x" | "o" | null)[][]) {
     return this.playerWon(state, "x") ? 1 : this.playerWon(state, "o") ? -1 : 0;
   }
 
-  playerWon(state: Board, player: "x" | "o"): boolean {
+  playerWon(state: ("x" | "o" | null)[][], player: "x" | "o") {
     return (
       this.verticalWinCheck(state, player) ||
       this.horizontalWinCheck(state, player) ||
@@ -79,7 +75,7 @@ class Game {
     );
   }
 
-  verticalWinCheck(state: Board, player: "x" | "o"): boolean {
+  verticalWinCheck(state: ("x" | "o" | null)[][], player: "x" | "o") {
     for (let i = 0; i < 3; i++) {
       let rowCount = 0;
       for (let j = 0; j < 3; j++) {
@@ -93,7 +89,7 @@ class Game {
     return false;
   }
 
-  horizontalWinCheck(state: Board, player: "x" | "o"): boolean {
+  horizontalWinCheck(state: ("x" | "o" | null)[][], player: "x" | "o") {
     for (let i = 0; i < 3; i++) {
       let rowCount = 0;
       for (let j = 0; j < 3; j++) {
@@ -107,7 +103,7 @@ class Game {
     return false;
   }
 
-  diagonalWinCheck(state: Board, player: "x" | "o"): boolean {
+  diagonalWinCheck(state: ("x" | "o" | null)[][], player: "x" | "o") {
     let dia1Count = 0;
     let dia2Count = 0;
     for (let i = 0; i < 3; i++) {
@@ -118,7 +114,7 @@ class Game {
     return false;
   }
 
-  tieCheck(state: Board): boolean {
+  tieCheck(state: ("x" | "o" | null)[][]) {
     return (
       (function () {
         return ![...state[0], ...state[1], ...state[2]].includes(null);
@@ -126,36 +122,78 @@ class Game {
     );
   }
 
-  nextRound(): this {
+  nextRound() {
     this.xFirst = !this.xFirst;
     return this;
   }
 
-  makeMove(action: Action): void {
+  makeMove(action: { player: "x" | "o"; position: [number, number] }) {
     this.board = this.result(this.board, action);
   }
 }
 
 class AI {
-  play(game: Game): any {
+  constructor() {
+    // AI can be configured to play with different difficulty levels
+    this.setDifficulty("easy");
+  }
+
+  // difficulty level to their depth
+  // "easy" - random moves, "medium" - minimax with depth 2, "hard" - minimax with depth (unlimited)
+  difficulty: "easy" | "medium" | "hard" = "easy";
+  MEDIUM_DEPTH = 2;
+
+  setDifficulty(difficulty: "easy" | "medium" | "hard" = "hard") {
+    this.difficulty = difficulty;
+  }
+
+  play(game: Game) {
     if (game.player(game.board) === "x") return this.max(game);
     return this.mini(game);
   }
 
-  max(game: Game, action: Action | null = null): any {
+  max(
+    game: Game,
+    action: { player: "x" | "o"; position: [number, number] } | null = null,
+    depth: number = 0
+  ): { player: "x" | "o"; position: [number, number]; utility: number } {
     if (!action || !game.terminal(game.result(game.board, action))) {
-      const board: Board = action ? game.result(game.board, action) : game.board;
+      // if easy difficulty, return a random action
+      if (this.difficulty === "easy") {
+        action = this.shuffle(game.actions(game.board))[0];
+      }
+
+      const board = action ? game.result(game.board, action) : game.board;
       let v = -44444444444;
-      let choice: any = {};
+      let choice: {
+        player: "x" | "o";
+        position: [number, number];
+        utility: number;
+      } | null = null;
       for (let action of this.shuffle(game.actions(board))) {
-        const miniChoice = this.mini(new Game(board).nextRound(), action);
+        // if medium difficulty, limit depth
+        if (this.difficulty === "medium" && depth >= this.MEDIUM_DEPTH) {
+          return action;
+        }
+
+        const miniChoice = this.mini(
+          new Game(board).nextRound(),
+          action,
+          depth + 1
+        );
         const { utility } = miniChoice;
         if (utility > v) {
           v = utility;
           choice = { ...action, utility };
         }
       }
-      return choice;
+      if (choice) return choice;
+      // Fallback: return a dummy action (should not happen in normal gameplay)
+      return {
+        player: "x",
+        position: [0, 0],
+        utility: v,
+      };
     }
     return {
       ...action,
@@ -163,20 +201,44 @@ class AI {
     };
   }
 
-  mini(game: Game, action: Action | null = null): any {
+  mini(
+    game: Game,
+    action: { player: "x" | "o"; position: [number, number] } | null = null,
+    depth: number = 0
+  ): { player: "x" | "o"; position: [number, number]; utility: number } {
     if (!action || !game.terminal(game.result(game.board, action))) {
-      const board: Board = action ? game.result(game.board, action) : game.board;
+      // if easy difficulty, return a random action
+      if (this.difficulty === "easy") {
+        action = this.shuffle(game.actions(game.board))[0];
+      }
+
+      const board = action ? game.result(game.board, action) : game.board;
       let v = 44444444444;
-      let choice: any = {};
+      let choice: {
+        player: "x" | "o";
+        position: [number, number];
+        utility: number;
+      } | null = null;
       for (let action of this.shuffle(game.actions(board))) {
-        const maxChoice = this.max(new Game(board), action);
+        // if medium difficulty, limit depth
+        if (this.difficulty === "medium" && depth >= this.MEDIUM_DEPTH) {
+          return action;
+        }
+
+        const maxChoice = this.max(new Game(board), action, depth + 1);
         const { utility } = maxChoice;
         if (utility < v) {
           v = utility;
           choice = { ...action, utility };
         }
       }
-      return choice;
+      if (choice) return choice;
+      // Fallback: return a dummy action (should not happen in normal gameplay)
+      return {
+        player: "o",
+        position: [0, 0],
+        utility: v,
+      };
     }
     return {
       ...action,
@@ -184,12 +246,12 @@ class AI {
     };
   }
 
-  shuffle<T>(array: T[]): T[] {
-    let c_array: T[] = JSON.parse(JSON.stringify(array));
-    let arrLen: number = c_array.length;
+  shuffle(array: any[]) {
+    let c_array = JSON.parse(JSON.stringify(array));
+    let arrLen = c_array.length;
 
     while (arrLen != 0) {
-      let randIndex: number = Math.floor(Math.random() * arrLen);
+      let randIndex = Math.floor(Math.random() * arrLen);
       arrLen--;
       [c_array[arrLen], c_array[randIndex]] = [
         c_array[randIndex],

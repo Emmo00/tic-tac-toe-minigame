@@ -6,7 +6,7 @@ function App() {
   useEffect(() => {
     sdk.actions.ready();
   }, []);
-  
+
   const getInitialBoard = (): ("x" | "o" | null)[][] => [
     [null, null, null],
     [null, null, null],
@@ -25,10 +25,21 @@ function App() {
   const [winningMessage, setWinningMessage] = useState("");
   // Show winning message
   const [showWinning, setShowWinning] = useState(false);
+  // disable player input when AI is playing
+  const [disablePlayer, setDisablePlayer] = useState(false);
+  // difficulty level for AI
+  const [aiDifficulty, setAiDifficulty] = useState<"easy" | "medium" | "hard">(
+    "easy"
+  );
 
   // Game and AI instances
   const [game, setGame] = useState(() => new Game(getInitialBoard()));
   const [ai] = useState(() => new AI());
+
+  // Set AI difficulty
+  useEffect(() => {
+    ai.setDifficulty(aiDifficulty);
+  }, [ai, aiDifficulty]);
 
   // Sync game.xFirst with xFirst
   useEffect(() => {
@@ -36,7 +47,7 @@ function App() {
   }, [xFirst, game]);
 
   // Start new game
-  const startGame = () => {
+  const startGame = (xFirst: boolean) => {
     setBoard(getInitialBoard());
     setGame(new Game(getInitialBoard()));
     setShowWinning(false);
@@ -87,10 +98,14 @@ function App() {
 
   // AI move if it's O's turn and game not over
   useEffect(() => {
+    // disable player input when AI is playing
+    setDisablePlayer(!xTurn);
+
     if (!xTurn && !game.terminal(board)) {
       setTimeout(() => {
         const action = ai.play(game);
-        game.makeMove(action);
+        const aiAction = { player: "o" as "o", position: action.position };
+        game.makeMove(aiAction);
         setBoard(
           game.board.map((row: (string | null)[]) =>
             row.map(
@@ -100,7 +115,6 @@ function App() {
           )
         );
         setXTurn(true);
-        game.nextRound();
       }, 400);
     }
     // eslint-disable-next-line
@@ -125,19 +139,21 @@ function App() {
       )
     );
     setXTurn(false);
-    game.nextRound();
   };
 
   return (
     <>
-      <div className="board" id="board">
+      {/* Turn Info */}
+      <div className="turn-info">{xTurn ? "Your Turn" : "Computer's Turn"}</div>
+
+      <div className="board" id="board" aria-disabled={disablePlayer}>
         {board.map((row, rowIdx) =>
           row.map((cell, colIdx) => (
             <div
               key={rowIdx * 3 + colIdx}
               className={`cell${cell === "x" ? " x" : cell === "o" ? " o" : ""}`}
               data-cell
-              onClick={() => handleCellClick(rowIdx, colIdx)}
+              onClick={() => !disablePlayer && handleCellClick(rowIdx, colIdx)}
               style={{
                 cursor:
                   board[rowIdx][colIdx] || game.terminal(board) || !xTurn
@@ -147,6 +163,22 @@ function App() {
             ></div>
           ))
         )}
+      </div>
+      <br />
+      {/* Difficulty Selector */}
+      <div className="difficulty-selector">
+        <label htmlFor="difficulty">AI Difficulty:</label>
+        <select
+          id="difficulty"
+          value={aiDifficulty}
+          onChange={(e) =>
+            setAiDifficulty(e.target.value as "easy" | "medium" | "hard")
+          }
+        >
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
       </div>
       <br />
       <div className="stats">
@@ -179,16 +211,19 @@ function App() {
         id="winning-message"
         style={{ display: showWinning ? "block" : "none" }}
       >
-        <div data-winning-message-text>{winningMessage}</div>
-        <button
-          id="restart-button"
-          onClick={() => {
-            setXFirst(!xFirst);
-            startGame();
-          }}
-        >
-          Restart
-        </button>
+        {" "}
+        <div className="winning-message-content">
+          <div data-winning-message-text>{winningMessage}</div>
+          <button
+            id="restart-button"
+            onClick={() => {
+              setXFirst(!xFirst);
+              startGame(!xFirst);
+            }}
+          >
+            Restart
+          </button>
+        </div>
       </div>
       <footer>
         AI by {" \t"}

@@ -14,6 +14,16 @@ body {
   font-family: "Courier New", Courier, monospace;
 }
 
+.turn-info {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  color: black;
+  z-index: 1000;
+}
+
 .board {
   width: 100vw;
   height: 65vh;
@@ -153,6 +163,12 @@ body {
   font-size: 5rem;
 }
 
+.winning-message-content {
+  text-align: center;
+  margin-top: 50vh;
+  transform: translateY(-50%);
+}
+
 .winning-message button {
   font-size: 2rem;
   background-color: white;
@@ -172,6 +188,26 @@ body {
 .winning-message.show {
   display: flex;
 }
+
+.difficulty-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.difficulty-selector select {
+  padding: 5px;
+  font-size: 1.2rem;
+  border: 2px solid black;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
+
+
+
 .stats {
   display: flex;
   height: 15vh;
