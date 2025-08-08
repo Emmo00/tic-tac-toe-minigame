@@ -227,13 +227,10 @@ function App() {
       </div>
       <footer>
         AI by {" \t"}
-        <a
+        <button
           style={{
             marginLeft: "3px",
           }}
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
           onClick={async () =>
             await sdk.actions.viewProfile({
               fid: 891361,
@@ -241,7 +238,7 @@ function App() {
           }
         >
           Emmanuel
-        </a>
+        </button>
       </footer>
     </>
   );
