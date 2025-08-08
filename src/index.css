@@ -171,6 +171,15 @@ body {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
+.winning-message-content div {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.winning-message h1 {
+  margin: 0;
+  font-size: 3rem;
+}
+
 .winning-message button {
   font-size: 2rem;
   background-color: white;
