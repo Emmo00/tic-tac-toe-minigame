@@ -5,6 +5,7 @@ import { Game, AI } from "./game.ts";
 function App() {
   useEffect(() => {
     sdk.actions.ready();
+    sdk.actions.addMiniApp();
   }, []);
 
   const getInitialBoard = (): ("x" | "o" | null)[][] => [
