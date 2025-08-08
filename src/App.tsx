@@ -80,6 +80,14 @@ function App() {
     localStorage.setItem("drawScore", String(scores.draw));
   }, [scores]);
 
+  // Handle share functionality
+  const handleShare = () => {
+    sdk.actions.composeCast({
+      text: `Check out my Tic Tac Toe game! Current score - X: ${scores.x}, O: ${scores.o}, Draw: ${scores.draw}`,
+      embeds: ["https://tic-tac-toe-minigame-amber.vercel.app/"],
+    });
+  };
+
   // Check win/draw after every move
   useEffect(() => {
     if (game.playerWon(board, "x")) {
@@ -144,6 +152,26 @@ function App() {
 
   return (
     <>
+      {/* Share Button - Top Right */}
+      <button
+        onClick={handleShare}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          padding: "8px 16px",
+          backgroundColor: "#ffffff",
+          border: "1px solid #000",
+          color: "black",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontSize: "14px",
+          fontWeight: "500",
+        }}
+      >
+        Share
+      </button>
+
       {/* Turn Info */}
       <div className="turn-info">{xTurn ? "Your Turn" : "Computer's Turn"}</div>
 
